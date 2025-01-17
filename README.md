@@ -48,52 +48,52 @@
 └── README.md
 ```
 
-## Crear un entorno virtual
-  ```bash
-  python -m venv .venv
-  ```
-  ## Activar el entorno virtual
-  ```bash
-  source .venv/bin/activate
-  ```
-  ## Instalar fastapi 
-  ```bash
-  pip install fastapi
-  ```
-  ## Instalar uvicorn
-  ```bash
-  pip install uvicorn
-  ```
-  ## Instalar las dependencias Iniciales
-  ```bash
-  pip install sqlalchemy
-  pip install pydantic
-  pip install python-dotenv
-  ```
-  ## Instalar las dependencias de requirements.txt
-  ```bash
-  pip install -r requirements.txt
-  ``` 
+# Crear un entorno virtual
+```bash
+python -m venv .venv
+```
+# Activar el entorno virtual
+```bash
+source .venv/bin/activate
+```
+# Instalar fastapi 
+```bash
+pip install fastapi
+```
+# Instalar uvicorn
+```bash
+pip install uvicorn
+```
+# Instalar las dependencias Iniciales
+```bash
+pip install sqlalchemy
+pip install pydantic
+pip install python-dotenv
+```
+# Instalar las dependencias de requirements.txt
+```bash
+pip install -r requirements.txt
+``` 
 
-  ## Crear requeriments.txt
-  ```bash
-  pip freeze > requirements.txt
-  ```  
-  ## Verificar paquetes actualizados
-  ```bash
-  pip list --outdated
-  ```  
-  ## Actualizar paquetes del archivo requeriments.txt
-  ```bash
-  pip install --upgrade pip pip-tools
-  mv requirements.txt requirements.in
-  pip-compile --upgrade requirements.in
-  pip install -r requirements.txt
-  ```  
-  ## Sincronizar paquetes del archivo requeriments.txt
-  ```bash
-  pip-sync requirements.txt
-  ```  
+# Crear requeriments.txt
+```bash
+pip freeze > requirements.txt
+```  
+# Verificar paquetes actualizados
+```bash
+pip list --outdated
+```  
+# Actualizar paquetes del archivo requeriments.txt
+```bash
+pip install --upgrade pip pip-tools
+mv requirements.txt requirements.in
+pip-compile --upgrade requirements.in
+pip install -r requirements.txt
+```  
+# Sincronizar paquetes del archivo requeriments.txt
+```bash
+pip-sync requirements.txt
+```  
 
 # Crear el directorio principal
 ```bash
