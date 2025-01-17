@@ -116,7 +116,7 @@ touch app/services/__init__.py app/services/openai_service.py app/services/qr_se
 touch alembic.ini .env requirements.txt
 ```
 
-# Crear un archivo README.md (opcional, pero recomendado)
+# Crear un archivo README.md
 ```bash
 touch README.md
 ```
