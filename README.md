@@ -1,3 +1,4 @@
+ ```bash
 /FastAPICreatureApp
 │
 ├── app/
@@ -45,6 +46,7 @@
 ├── main.py
 ├── requirements.txt
 └── README.md
+```
 
 ## Crear un entorno virtual
   ```bash
