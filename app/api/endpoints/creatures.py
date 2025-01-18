@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import models
@@ -8,6 +8,7 @@ from app.services.dalle_service import AI_image_creature_generator # Update: Imp
 from app.config import settings
 import os
 from fastapi.responses import FileResponse
+from pydantic import ValidationError
 
 router = APIRouter()
 
@@ -33,29 +34,49 @@ async def serve_creature_image(filename: str):
 
 @router.post("/generate_creature", response_model=schemas.CreatureResponse)
 async def generate_creature(
-    client_request: schemas.ClientRequest,
+    #client_request: schemas.ClientRequest,
+    client_request: dict = Body(...),  # Recibe la solicitud como un diccionario sin validación automática
     db: Session = Depends(get_db)
 ):
-    if not client_request.client_name:
-        raise HTTPException(status_code=400, detail="Se requiere el nombre.")
-    if not client_request.birth_date:
+    # Validación manual de los campos
+    if "client_name" not in client_request or not client_request["client_name"]:
+        raise HTTPException(status_code=400, detail="Se requiere el nombre del cliente.")
+    if "birth_date" not in client_request or not client_request["birth_date"]:
         raise HTTPException(status_code=400, detail="Se requiere la fecha de nacimiento.")
-    if not client_request.creature_details:
+    if "creature_details" not in client_request or not client_request["creature_details"]:
         raise HTTPException(status_code=400, detail="Se requieren los detalles de la criatura.")
 
-    wheel_count = db.query(models.Wheel).count()
-    if wheel_count == 0:
-        raise HTTPException(status_code=400, detail="No hay números disponibles en la ruleta.")
-
     try:
+        # Verificar que hay números disponibles en la ruleta
+        wheel_count = db.query(models.Wheel).count()
+        if wheel_count == 0:
+            raise HTTPException(status_code=400, detail="No hay números disponibles en la ruleta.")
+
+        # Llamar al servicio para generar la descripción de la criatura
         creature = await openai_service.AI_description_creature_generator(
-            client_request.client_name,
-            client_request.birth_date,
-            client_request.creature_details
+            client_request["client_name"],
+            client_request["birth_date"],
+            client_request["creature_details"]
         )
+
+        try:
+            creature = await openai_service.AI_description_creature_generator(
+                client_request.client_name,
+                client_request.birth_date,
+                client_request.creature_details
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"An error occurred while generating the creature description: {str(e)}")
+
         return schemas.CreatureResponse(**creature)
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occurred while generating the creature description: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error al generar la criatura: {str(e)}")
+
+
+
+
+
 
 @router.post("/buy_creature", response_model=schemas.CreatureResponse)
 async def buy_creature(

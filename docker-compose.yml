@@ -9,6 +9,7 @@ services:
     restart: always
     networks:
       - backend
+      - frontend
     #deploy:
     #  replicas: 2
     environment:
@@ -22,6 +23,9 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}  # Clave de API de OpenAI
       - OPENAI_ORG_ID=${OPENAI_ORG_ID}  # ID de la organización de OpenAI
       - OPENAI_PROJECT_ID=${OPENAI_PROJECT_ID}  # ID del proyecto de OpenAI
+
+      - CHECK_EMAIL_DELIVERABILITY=False
+      
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=gateway"
@@ -32,6 +36,7 @@ services:
       - "traefik.http.routers.${BACKEND_APP_ROUTER}.tls.certresolver=production-letsencrypt"
       - "traefik.http.services.${BACKEND_APP_SERVICE}.loadbalancer.server.port=${FASTAPI_PORT}"
       #- "traefik.http.services.${BACKEND_APP_SERVICE}.loadbalancer.method=leastrequest"
+  
   postgres:
     image: postgres:16.1
     restart: always
@@ -49,6 +54,7 @@ services:
       retries: 10
     networks:
       - backend
+  
   pgadmin:
     image: elestio/pgadmin:latest
     restart: always
@@ -57,12 +63,13 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     networks:
       - backend
+      - frontend
     volumes:
         - ./servers.json:/pgadmin4/servers.json
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=gateway"
-      - "traefik.http.routers.${PGADMIN_APP_ROUTER}.rule=Host(`${PGADMIN_DOMAIN}`&& PathPrefix(`/creatures`))"  # Aquí puedes usar un dominio para pgAdmin
+      - "traefik.http.routers.${PGADMIN_APP_ROUTER}.rule=Host(`${PGADMIN_DOMAIN}`) && PathPrefix(`/creatures`)"  # Aquí puedes usar un dominio para pgAdmin
       - "traefik.http.routers.${PGADMIN_APP_ROUTER}.service=${PGADMIN_APP_SERVICE}"
       - "traefik.http.routers.${PGADMIN_APP_ROUTER}.entrypoints=websecure"
       - "traefik.http.routers.${PGADMIN_APP_ROUTER}.tls=true"
@@ -87,6 +94,10 @@ services:
 
 networks:
   backend:
+  frontend:
+    external: true
+    name: gateway
+    driver: bridge
 
 volumes:
   db_storage:

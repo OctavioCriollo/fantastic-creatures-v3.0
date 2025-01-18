@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from datetime import date, datetime
 from typing import Optional
 
@@ -8,7 +8,7 @@ class ClientRequest(BaseModel):
     client_name: str = Field(..., max_length=100, description="Nombre del cliente.")
     birth_date: str = Field(..., pattern=r"^\d{4}-\d{2}-\d{2}$", description="Fecha de nacimiento en formato AAAA-MM-DD.")
     client_email: Optional[str] = Field(None, max_length=120, description="Email del cliente (opcional).")
-    creature_details: str = Field(..., max_length=2000, description="Detalles de la criatura mágica que se desea generar.")
+    creature_details: str = Field(..., max_length=200, description="Detalles de la criatura mágica que se desea generar.")
 
 class CreatureBase(BaseModel):
     name: str = Field(..., max_length=50, description="Nombre de la criatura.")

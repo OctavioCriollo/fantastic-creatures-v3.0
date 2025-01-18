@@ -146,6 +146,7 @@ async def AI_description_creature_generator(client_name, birth_date, creature_de
         'name': creature_name,
         'description': creature_description,
         'unique_number': unique_number,
-        'image_url': image_filename
+        'image_url': image_filename,
+        'created_at': datetime.now()
     }
 
