@@ -52,18 +52,12 @@ async def generate_creature(
         if wheel_count == 0:
             raise HTTPException(status_code=400, detail="No hay números disponibles en la ruleta.")
 
-        # Llamar al servicio para generar la descripción de la criatura
-        creature = await openai_service.AI_description_creature_generator(
-            client_request["client_name"],
-            client_request["birth_date"],
-            client_request["creature_details"]
-        )
-
         try:
+            # Llamar al servicio para generar la descripción de la criatura
             creature = await openai_service.AI_description_creature_generator(
-                client_request.client_name,
-                client_request.birth_date,
-                client_request.creature_details
+                client_request["client_name"],
+                client_request["birth_date"],
+                client_request["creature_details"]
             )
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"An error occurred while generating the creature description: {str(e)}")
